@@ -13,8 +13,8 @@ class TimeLine extends StatefulWidget {
 class _TimeLineState extends State<TimeLine> {
   @override
   void initState() {
-    getUsers();
-    addUser();
+//    getUsers();
+//    addUser();
 //    deleteUser();
 //    getUserById();
     super.initState();

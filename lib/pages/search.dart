@@ -1,6 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttershare/models/user.dart';
+import 'package:fluttershare/pages/home.dart';
+import 'package:fluttershare/widgets/progress.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -8,40 +10,57 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  @override
-  buildSearchField() {
+  TextEditingController searchController = TextEditingController();
+  Future<QuerySnapshot> searchResultsFuture;
+
+  handleSearch(String query) {
+    Future<QuerySnapshot> users = firestore.collection('users')
+        .where("displayname", isGreaterThanOrEqualTo: query)
+        .getDocuments();
+    setState(() {
+      searchResultsFuture = users;
+    });
+  }
+
+  clearSearch() {
+    searchController.clear();
+  }
+
+  AppBar buildSearchField() {
     return AppBar(
       backgroundColor: Colors.white,
       title: TextFormField(
+        controller: searchController,
         decoration: InputDecoration(
-          hintText: "Search for a user",
+          hintText: "Search for a user...",
           filled: true,
-          prefixIcon: Icon(Icons.account_box),
+          prefixIcon: Icon(
+            Icons.account_box,
+            size: 28.0,
+          ),
           suffixIcon: IconButton(
             icon: Icon(Icons.clear),
-            onPressed: () => print("Cleared"),
+            onPressed: clearSearch,
           ),
         ),
+        onFieldSubmitted: handleSearch,
       ),
     );
   }
 
-  buildNoContent() {
+  Container buildNoContent() {
+    final Orientation orientation = MediaQuery.of(context).orientation;
     return Container(
       child: Center(
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
-            SvgPicture.asset(
-              "assets/images/search.svg",
-              height: 300,
-            ),
             Text(
               "Find Users",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontStyle: FontStyle.italic,
                 color: Colors.white,
+                fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
                 fontSize: 60.0,
               ),
@@ -52,10 +71,35 @@ class _SearchState extends State<Search> {
     );
   }
 
+  buildSearchResults() {
+    return FutureBuilder(
+        future: searchResultsFuture,
+        builder: (context, futuresnapshot) {
+          print("here");
+          if (!futuresnapshot.hasData) {
+            return circularProgress();
+          }
+          List<Text> searchResults = [];
+          print("here2");
+          futuresnapshot.data.documents.forEach((doc) {
+            print("for each");
+            User user = User.fromDocument(doc);
+            searchResults.add(Text(user.username));
+            print(searchResults);
+            print("Parthav comes here"+user.username);
+          });
+          return ListView(
+            children: searchResults,
+          );
+        },
+      );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildSearchField(),
-      body: buildNoContent(),
+      body: searchResultsFuture == null ? buildNoContent() : buildSearchResults(),
     );
   }
 }

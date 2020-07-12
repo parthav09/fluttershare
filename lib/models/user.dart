@@ -14,16 +14,17 @@ class User {
       this.displayname,
       this.email,
       this.photoUrl,
-      this.bio});
+      this.bio,
+      });
 
   factory User.fromDocument(DocumentSnapshot doc){
     return User(
       id: doc['id'],
       email: doc['email'],
-      bio: doc['bio'],
-      displayname: doc['displayname'],
+      username: doc['username'],
       photoUrl: doc['photoUrl'],
-      username: doc['username']
+      displayname: doc['displayname'],
+      bio: doc['bio'],
     );
   }
 }

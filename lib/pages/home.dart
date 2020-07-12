@@ -27,19 +27,20 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    super.initState();
+    pageController = PageController();
+    // Detects when user signed in
     googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
-    }, onError: (error) {
-      print("error signing in ! $error");
+    }, onError: (err) {
+      print('Error signing in: $err');
     });
-    //Re-authenticating user
+    // Reauthenticate user when app is opened
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
-    }).catchError((error) {
-      print("Error signing in $error");
+    }).catchError((err) {
+      print('Error signing in: $err');
     });
-    pageController = PageController();
-    super.initState();
   }
 
   @override
@@ -104,11 +105,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-//          TimeLine(),
-      RaisedButton(
-      child: Text("Logout"),
-      onPressed: logout,
-    ),
+          TimeLine(),
           ActivityFeed(),
           Upload(),
           Search(),
