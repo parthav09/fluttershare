@@ -51,6 +51,7 @@ class _SearchState extends State<Search> {
   Container buildNoContent() {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return Container(
+      color: Colors.purple,
       child: Center(
         child: ListView(
           shrinkWrap: true,
@@ -75,18 +76,14 @@ class _SearchState extends State<Search> {
     return FutureBuilder(
         future: searchResultsFuture,
         builder: (context, futuresnapshot) {
-          print("here");
           if (!futuresnapshot.hasData) {
             return circularProgress();
           }
-          List<Text> searchResults = [];
-          print("here2");
+          List<UserResult> searchResults = [];
           futuresnapshot.data.documents.forEach((doc) {
-            print("for each");
             User user = User.fromDocument(doc);
-            searchResults.add(Text(user.username));
-            print(searchResults);
-            print("Parthav comes here"+user.username);
+            UserResult searchresult= UserResult(user);
+            searchResults.add(searchresult);
           });
           return ListView(
             children: searchResults,
@@ -105,8 +102,30 @@ class _SearchState extends State<Search> {
 }
 
 class UserResult extends StatelessWidget {
+  final User user;
+  UserResult(this.user);
   @override
   Widget build(BuildContext context) {
-    return Text("User Result");
+    return Container(
+      color: Theme.of(context).primaryColor.withOpacity(0.7),
+      child: Column(
+        children: <Widget>[
+          GestureDetector(
+            onTap: ()=> print("Tapped"),
+            child: ListTile(
+              title: Text(user.displayname, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
+              subtitle: Text(user.username, style: TextStyle(color: Colors.white),),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(user.photoUrl),
+              ),
+            ),
+          ),
+          Divider(
+            height: 2.0,
+            color: Colors.white54,
+          ),
+        ],
+      ),
+    );
   }
 }
