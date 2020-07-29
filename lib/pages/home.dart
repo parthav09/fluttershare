@@ -7,7 +7,7 @@ import 'package:fluttershare/pages/profile.dart';
 import 'package:fluttershare/pages/timeline.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../pages/search.dart';
-import '../pages/upload.dart';
+import '../pages/idea.dart';
 import '../models/user.dart';
 
 final googleSignIn = GoogleSignIn();
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           TimeLine(),
           ActivityFeed(),
-          Upload(),
+          Idea(),
           Search(),
           Profile(),
         ],

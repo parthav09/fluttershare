@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttershare/models/user.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/progress.dart';
@@ -56,6 +57,7 @@ class _SearchState extends State<Search> {
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
+            SvgPicture.asset('assets/images/no_content.svg'),
             Text(
               "Find Users",
               textAlign: TextAlign.center,

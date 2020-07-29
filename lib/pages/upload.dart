@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'idea.dart';
 
 class Upload extends StatefulWidget {
   @override
@@ -13,7 +16,8 @@ class _UploadState extends State<Upload> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Image.asset('assets/images/turtle.png', height: 260),
+          SvgPicture.asset('assets/images.upload.svg', height: 260,),
+          Padding(padding: EdgeInsets.only(top: 20),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -28,7 +32,7 @@ class _UploadState extends State<Upload> {
                     Text("  Let's Share"),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: ()=> Navigator.of(context).push(CupertinoPageRoute(builder: (context)=> Idea())),
               ),
             ],
           ),
