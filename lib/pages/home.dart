@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           TimeLine(),
           ActivityFeed(),
-          Idea(),
+          Idea(currentuser: currentUser),
           Search(),
           Profile(),
         ],
