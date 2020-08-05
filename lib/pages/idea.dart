@@ -1,3 +1,5 @@
+import 'package:fluttershare/widgets/progress.dart';
+
 import '../models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/idea_item.dart';
@@ -15,6 +17,7 @@ class _IdeaState extends State<Idea> {
   String title;
   String subtitle;
   String desc;
+  bool _isuploading= false;
 
   final subFocusNode = FocusNode();
 
@@ -22,16 +25,23 @@ class _IdeaState extends State<Idea> {
 
   final _form = GlobalKey<FormState>();
 
-  void handlesubmission() {
+  createIdeaInFireStore(IdeaItem ideaItem){
+    print("wojo");
+    print(ideaItem);
+  }
+
+  void handleSubmission() {
+    setState(() {
+      _isuploading= true;
+    });
     _form.currentState.validate();
     _form.currentState.save();
-    Idea_Item(mainIdea: title, sub: subtitle, ans: desc);
+    IdeaItem ideaitem= IdeaItem(mainIdea: title, sub: subtitle, ans: desc);
     print(title + subtitle + desc);
+    createIdeaInFireStore(ideaitem);
     setState(() {
       _form.currentState.reset();
     });
-    print("It has been submitted");
-    print(Idea_Item());
   }
 
   @override
@@ -53,14 +63,16 @@ class _IdeaState extends State<Idea> {
                   _form.currentState.reset();
                 })),
       ),
-      body: Card(
-        color: Color.fromRGBO(231, 202, 182, 1),
-        child: Padding(
-          padding: EdgeInsets.all(15),
-          child: Form(
-            key: _form,
-            child: ListView(
-              children: <Widget>[
+      body: Padding(
+        padding: EdgeInsets.all(8),
+        child: Card(
+          elevation: 0,
+          color: Color.fromRGBO(231, 202, 182, 1),
+          child:Form(
+              key: _form,
+              child: ListView(
+                children: <Widget>[
+                  _isuploading? linearProgress(): Text(""),
 //                Container(
 //                  alignment: Alignment.center,
 //                  height: 40,
@@ -82,98 +94,99 @@ class _IdeaState extends State<Idea> {
 //                    ),
 //                  ),
 //                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty && value.length < 8) {
-                        return "Minimum charater for this field is 10";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Title',
-                        border: OutlineInputBorder(
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty && value.length < 8) {
+                          return "Minimum charater for this field is 10";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Title',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )),
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(subFocusNode);
+                      },
+                      onSaved: (value) {
+                        title = value;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty && value.length < 1) {
+                          return "Minimum charater for this field is 10";
+                        }
+                        return null;
+                      },
+                      focusNode: subFocusNode,
+                      decoration: InputDecoration(
+                          labelText: 'sub title (3 max lines)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          )),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(articleFocusNode);
+                      },
+                      onSaved: (value) {
+                        subtitle = value;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty && value.length < 5) {
+                          return "Minimum charater for this field is 10";
+                        }
+                        return null;
+                      },
+                      focusNode: articleFocusNode,
+                      decoration: InputDecoration(
+                          labelText: 'Enter your article (10 max lines)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          )),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 10,
+                      onSaved: (value) {
+                        desc = value;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: InkWell(
+                      onTap: _isuploading? null : ()=> handleSubmission(),
+                      splashColor: Colors.purple,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                        )),
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(subFocusNode);
-                    },
-                    onSaved: (value) {
-                      title = value;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty && value.length < 1) {
-                        return "Minimum charater for this field is 10";
-                      }
-                      return null;
-                    },
-                    focusNode: subFocusNode,
-                    decoration: InputDecoration(
-                        labelText: 'sub title (3 max lines)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        )),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(articleFocusNode);
-                    },
-                    onSaved: (value) {
-                      subtitle = value;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty && value.length < 5) {
-                        return "Minimum charater for this field is 10";
-                      }
-                      return null;
-                    },
-                    focusNode: articleFocusNode,
-                    decoration: InputDecoration(
-                        labelText: 'Enter your article (10 max lines)',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        )),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 10,
-                    onSaved: (value) {
-                      desc = value;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(15),
-                  child: InkWell(
-                    onTap: handlesubmission,
-                    splashColor: Colors.purple,
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      child: Text(
-                        "Post",
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        child: Text(
+                          "Post",
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+
         ),
       ),
     );

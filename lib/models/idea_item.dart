@@ -1,7 +1,7 @@
-class Idea_Item{
+class IdeaItem{
   String mainIdea;
   String sub;
   String ans;
-  Idea_Item({this.mainIdea, this.sub, this.ans});
+  IdeaItem({this.mainIdea, this.sub, this.ans});
 }
 
