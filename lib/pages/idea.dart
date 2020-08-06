@@ -1,7 +1,10 @@
+import 'package:fluttershare/pages/home.dart';
+import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttershare/widgets/progress.dart';
-
 import '../models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:fluttershare/models/idea_item.dart';
 
 class Idea extends StatefulWidget {
@@ -14,20 +17,47 @@ class Idea extends StatefulWidget {
 }
 
 class _IdeaState extends State<Idea> {
+  final _firestore= Firestore.instance;
   String title;
   String subtitle;
   String desc;
   bool _isuploading= false;
-
+  String postId = Uuid().v4();
   final subFocusNode = FocusNode();
+  TextEditingController locationController = TextEditingController();
 
   final articleFocusNode = FocusNode();
 
   final _form = GlobalKey<FormState>();
+  getUserLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await Geolocator()
+        .placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placemark = placemarks[0];
+    String completeAddress =
+        '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark.subLocality} ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea} ${placemark.postalCode}, ${placemark.country}';
+    print(completeAddress);
+    String formattedAddress = "${placemark.locality}, ${placemark.country}";
+    locationController.text = formattedAddress;
+  }
 
   createIdeaInFireStore(IdeaItem ideaItem){
-    print("wojo");
-    print(ideaItem);
+    print(ideaItem.ans);
+     _firestore.collection('posts').document(widget.currentuser.id).collection("userposts").document(postId).setData({
+      "postId": postId,
+      "userId": widget.currentuser.id,
+      "title": ideaItem.mainIdea,
+      "subIdea":ideaItem.sub,
+      "body":ideaItem.ans,
+       "location": locationController.text,
+       "timestamp": timestamp,
+      "likes":{},
+    });
+    setState(() {
+      _form.currentState.reset();
+      _isuploading=false;
+    });
   }
 
   void handleSubmission() {
@@ -39,9 +69,6 @@ class _IdeaState extends State<Idea> {
     IdeaItem ideaitem= IdeaItem(mainIdea: title, sub: subtitle, ans: desc);
     print(title + subtitle + desc);
     createIdeaInFireStore(ideaitem);
-    setState(() {
-      _form.currentState.reset();
-    });
   }
 
   @override
@@ -52,7 +79,7 @@ class _IdeaState extends State<Idea> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.pin_drop),
-            onPressed: () {},
+            onPressed: getUserLocation,
           ),
         ],
         backgroundColor: Color.fromRGBO(231, 202, 182, 1),
@@ -73,27 +100,6 @@ class _IdeaState extends State<Idea> {
               child: ListView(
                 children: <Widget>[
                   _isuploading? linearProgress(): Text(""),
-//                Container(
-//                  alignment: Alignment.center,
-//                  height: 40,
-//                  child: Text(
-//                    "Inspire",
-//                    textAlign: TextAlign.center,
-//                    style:
-//                        TextStyle(color: Colors.white, fontFamily: 'Signatra'),
-//                  ),
-//                  decoration: BoxDecoration(
-//                    borderRadius: BorderRadius.circular(10),
-//                    gradient: LinearGradient(
-//                      colors: [
-//                        Color.fromRGBO(20, 20, 80, 1),
-//                        Color.fromRGBO(80, 60, 120, 0.8),
-//                      ],
-//                      begin: Alignment.centerLeft,
-//                      end: Alignment.centerRight,
-//                    ),
-//                  ),
-//                ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
