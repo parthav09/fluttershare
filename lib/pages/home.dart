@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
           ActivityFeed(),
           Idea(currentuser: currentUser),
           Search(),
-          Profile(),
+          Profile(profileId: currentUser?.id),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,

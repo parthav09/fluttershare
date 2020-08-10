@@ -29,6 +29,7 @@ class _IdeaState extends State<Idea> {
   final articleFocusNode = FocusNode();
 
   final _form = GlobalKey<FormState>();
+
   getUserLocation() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -44,7 +45,7 @@ class _IdeaState extends State<Idea> {
 
   createIdeaInFireStore(IdeaItem ideaItem){
     print(ideaItem.ans);
-     _firestore.collection('posts').document(widget.currentuser.id).collection("userposts").document(postId).setData({
+     _firestore.collection('posts').document(widget.currentuser.id).collection("userposts").add({
       "postId": postId,
       "userId": widget.currentuser.id,
       "title": ideaItem.mainIdea,
