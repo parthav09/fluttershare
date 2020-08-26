@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/widgets/header.dart';
+import 'package:fluttershare/pages/edit_profile.dart';
+import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -14,6 +16,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final String currentUserId = currentUser?.id;
+
   Column buildCountColumn(String label, int count) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,9 +57,22 @@ class _ProfileState extends State<Profile> {
                 radius: 40,
                 backgroundImage: NetworkImage(user.photoUrl),
               ),
-              Text(user.username, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),textAlign: TextAlign.start,),
-              Text(user.displayname, textAlign: TextAlign.start,),
-              Text(user.bio, textAlign: TextAlign.start,),
+              Text(
+                user.username,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              Text(
+                user.displayname,
+                textAlign: TextAlign.start,
+              ),
+              Text(
+                user.bio,
+                textAlign: TextAlign.start,
+              ),
               Padding(
                 padding: EdgeInsets.all(25),
                 child: Column(
@@ -81,7 +98,25 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context),
+      appBar: AppBar(
+        title: Text("Profile"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              bool isProfileOwner = currentUserId == widget.profileId;
+              if (isProfileOwner) {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => EditProfile(currentUserId),
+                  ),
+                );
+              }
+            },
+          )
+        ],
+      ),
       body: ListView(
         children: <Widget>[
           buildProfileHeader(),

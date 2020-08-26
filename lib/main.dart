@@ -1,5 +1,6 @@
 // Flutter imports
 import 'package:flutter/material.dart';
+import 'package:fluttershare/pages/edit_profile.dart';
 
 //Project import
 import './pages/home.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Home(),
       routes: {
-
+//        EditProfile.routeName : (context)=> EditProfile(),
       },
     );
   }

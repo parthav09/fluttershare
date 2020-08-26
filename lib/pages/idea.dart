@@ -45,7 +45,7 @@ class _IdeaState extends State<Idea> {
 
   createIdeaInFireStore(IdeaItem ideaItem){
     print(ideaItem.ans);
-     _firestore.collection('posts').document(widget.currentuser.id).collection("userposts").add({
+     _firestore.collection('posts').document(widget.currentuser.id).collection("userposts").document(postId).setData({
       "postId": postId,
       "userId": widget.currentuser.id,
       "title": ideaItem.mainIdea,
@@ -58,6 +58,7 @@ class _IdeaState extends State<Idea> {
     setState(() {
       _form.currentState.reset();
       _isuploading=false;
+      postId=Uuid().v4();
     });
   }
 
