@@ -12,6 +12,9 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   bool isLoading= false;
+  String updateName;
+  String updatedBio;
+  bool _isUploading =false;
   @override
   void initState() {
     // TODO: implement initState
@@ -27,8 +30,20 @@ class _EditProfileState extends State<EditProfile> {
   }
   final _form= GlobalKey<FormState>();
   void saveCreds() async{
-    _form.currentState.validate();
+    setState(() {
+      _isUploading= true;
+    });
+    bool _isValid = _form.currentState.validate();
+    if(!_isValid){
+      return;
+    }
     _form.currentState.save();
+    await fireStore.collection('users').document(widget.currentUserId).updateData({
+      'username': updateName,
+      'bio': updatedBio,
+    });
+    print(updateName);
+    print(updatedBio);
   }
   @override
   Widget build(BuildContext context) {
@@ -41,12 +56,30 @@ class _EditProfileState extends State<EditProfile> {
             CircleAvatar(radius: 45,backgroundImage: null,),
             SizedBox(height: 20,),
             Form(
+              key: _form,
               child: Column(
                 children: <Widget>[
-                  TextFormField(onSaved: null,
+                  TextFormField(
+                    onSaved: (value){
+                    updateName=value;
+                  },
+                    validator: (value){
+                      if(value.trim().length<3 || value.isEmpty){
+                        return "Please enter a valid username or length should be more than 3 characters";
+                      }
+                      return null;
+                    },
                   decoration: InputDecoration(labelText: "Display Name"),),
                   TextFormField(
-                    onSaved: null,
+                    validator: (value){
+                      if(value.trim().length<3 || value.isEmpty){
+                        return "Please enter a valid username or length should be more than 3 characters";
+                      }
+                      return null;
+                    },
+                    onSaved: (value){
+                      updatedBio=value;
+                    },
                     decoration: InputDecoration(labelText: "Bio"),
                   ),
                   RaisedButton(child: Text("Update Profile"), onPressed: saveCreds,

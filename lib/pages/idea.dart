@@ -66,7 +66,10 @@ class _IdeaState extends State<Idea> {
     setState(() {
       _isuploading= true;
     });
-    _form.currentState.validate();
+    bool _isValid= _form.currentState.validate();
+    if(!_isValid){
+      return;
+    }
     _form.currentState.save();
     IdeaItem ideaitem= IdeaItem(mainIdea: title, sub: subtitle, ans: desc);
     print(title + subtitle + desc);
