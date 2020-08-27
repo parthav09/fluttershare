@@ -48,7 +48,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile"),),
+      appBar: AppBar(title: Text("Edit Your Profile"),),
       body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
