@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttershare/models/idea_item.dart';
 import 'package:fluttershare/models/user.dart';
 import 'package:fluttershare/pages/edit_profile.dart';
 import 'package:fluttershare/pages/home.dart';
+import 'package:fluttershare/widgets/idea_tile.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -17,6 +19,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final String currentUserId = currentUser?.id;
+  bool isLoading = false;
+  int postCount = 0;
+  String title;
+  String sub;
+  String desc;
 
   Column buildCountColumn(String label, int count) {
     return Column(
@@ -35,6 +42,27 @@ class _ProfileState extends State<Profile> {
         ),
       ],
     );
+  }
+
+  void initState() {
+    super.initState();
+    getProfilePosts();
+  }
+
+  Future<List<IdeaItem>> getProfilePosts() async {
+    List<IdeaItem> ideaitems = [];
+    QuerySnapshot snapshot = await firestore
+        .collection('posts')
+        .document(currentUserId)
+        .collection('userposts').orderBy('timestamp', descending: true)
+        .getDocuments();
+    snapshot.documents.forEach((element) {
+      ideaitems.add(IdeaItem.fromDocument(element.data));
+    });
+    setState(() {
+      postCount=snapshot.documents.length;
+    });
+    return ideaitems;
   }
 
   buildProfileHeader() {
@@ -80,9 +108,9 @@ class _ProfileState extends State<Profile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        buildCountColumn("article", 0),
-                        buildCountColumn("readers", 0),
-                        buildCountColumn("following", 0),
+                        buildCountColumn("article", postCount),
+                        buildCountColumn("readers", 1),
+                        buildCountColumn("following", 2),
                       ],
                     ),
                   ],
@@ -92,6 +120,14 @@ class _ProfileState extends State<Profile> {
           ),
         );
       },
+    );
+  }
+
+  Widget buildUserIdea(String title, String sub, String desc) {
+    return IdeaTile(
+      title: title,
+      sub: sub,
+      desc: desc,
     );
   }
 
@@ -109,7 +145,8 @@ class _ProfileState extends State<Profile> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => EditProfile(currentUserId),
+                    builder: (context) =>
+                        EditProfile(currentUserId, currentUser),
                   ),
                 );
               }
@@ -117,9 +154,25 @@ class _ProfileState extends State<Profile> {
           )
         ],
       ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
           buildProfileHeader(),
+          Expanded(
+            child: FutureBuilder(
+              future: getProfilePosts(),
+              builder: (context, snapshot) {
+                if (isLoading) {
+                  return CircularProgressIndicator();
+                }
+                return ListView.builder(
+                  itemBuilder: (context, index) =>
+                      buildUserIdea(snapshot.data[index].mainIdea, snapshot.data[index].sub, snapshot.data[index].ans),
+                  itemCount: snapshot.data.length,
+                );
+//                buildUserIdea(snapshot.data['title'], "subidea", "desc");
+              },
+            ),
+          )
         ],
       ),
     );

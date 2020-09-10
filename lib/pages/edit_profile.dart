@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/pages/timeline.dart';
 import '../models/user.dart';
 
 class EditProfile extends StatefulWidget {
   final currentUserId;
-  EditProfile(this.currentUserId);
+  final User currentUser;
+  EditProfile(this.currentUserId, this.currentUser);
   @override
   _EditProfileState createState() => _EditProfileState();
 }
@@ -29,25 +32,20 @@ class _EditProfileState extends State<EditProfile> {
     final currentUser = User.fromDocument(doc);
   }
   final _form= GlobalKey<FormState>();
+  final _scaffoldKey= GlobalKey<ScaffoldState>();
   void saveCreds() async{
-    setState(() {
-      _isUploading= true;
-    });
     bool _isValid = _form.currentState.validate();
-    if(!_isValid){
-      return;
-    }
     _form.currentState.save();
     await fireStore.collection('users').document(widget.currentUserId).updateData({
       'username': updateName,
       'bio': updatedBio,
     });
-    print(updateName);
-    print(updatedBio);
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (ctx)=> Home()),);
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(title: Text("Edit Your Profile"),),
       body: Padding(
         padding: EdgeInsets.all(15),

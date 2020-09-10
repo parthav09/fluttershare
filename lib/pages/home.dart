@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/pages/activity_feed.dart';
 import 'package:fluttershare/pages/create_account.dart';
 import 'package:fluttershare/pages/profile.dart';
 import 'package:fluttershare/pages/timeline.dart';
+import 'package:fluttershare/widgets/post.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../pages/search.dart';
 import '../pages/idea.dart';
@@ -86,7 +86,6 @@ class _HomeState extends State<Home> {
     print(currentUser);
     print(currentUser.username);
   }
-
   login() {
     googleSignIn.signIn();
   }
@@ -106,7 +105,7 @@ class _HomeState extends State<Home> {
       body: PageView(
         children: <Widget>[
           TimeLine(),
-          ActivityFeed(),
+          Post(),
           Idea(currentuser: currentUser),
           Search(),
           Profile(profileId: currentUser?.id),
