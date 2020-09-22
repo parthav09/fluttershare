@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttershare/pages/activity_feed.dart';
 import 'package:fluttershare/pages/create_account.dart';
 import 'package:fluttershare/pages/profile.dart';
 import 'package:fluttershare/pages/timeline.dart';
@@ -104,8 +105,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          TimeLine(),
-          Post(),
+          ActivityFeed(currentUser?.id),
+//          Post(),
           Idea(currentuser: currentUser),
           Search(),
           Profile(profileId: currentUser?.id),
@@ -125,9 +126,9 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(Icons.whatshot),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-          ),
+//          BottomNavigationBarItem(
+//            icon: Icon(Icons.notifications_active),
+//          ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.camera,
