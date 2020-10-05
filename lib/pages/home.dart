@@ -5,7 +5,6 @@ import 'package:fluttershare/pages/activity_feed.dart';
 import 'package:fluttershare/pages/create_account.dart';
 import 'package:fluttershare/pages/profile.dart';
 import 'package:fluttershare/pages/timeline.dart';
-import 'package:fluttershare/widgets/post.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../pages/search.dart';
 import '../pages/idea.dart';

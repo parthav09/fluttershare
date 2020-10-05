@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/idea_item.dart';
-import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/activity_tile.dart';
 
 class ActivityFeed extends StatefulWidget {
@@ -16,13 +15,13 @@ class _ActivityFeedState extends State<ActivityFeed> {
   String title;
   String sub;
   String desc;
-  final String _currentUserId = currentUser?.id;
+//  final String _currentUserId = currentUser?.id;
 
   initState() {
     super.initState();
     getActivity();
   }
-
+  /// Fetch Other users posts
   Future<List<IdeaItem>> getActivity() async {
     print(widget.myUserId);
     List<IdeaItem> feed = [];

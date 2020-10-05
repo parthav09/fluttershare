@@ -12,20 +12,34 @@ class ActivityTile extends StatelessWidget {
 
   ActivityTile({this.title, this.sub, this.desc, this.userId});
 
-  buildPostHeader(){
+  buildPostHeader() {
     return FutureBuilder(
-      future: Firestore.instance
-      .collection('users')
-      .document(userId)
-      .get(),
-      builder: (context, snapshot){
-        if(snapshot.connectionState==ConnectionState.waiting){
+      future: Firestore.instance.collection('users').document(userId).get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }
         User user = User.fromDocument(snapshot.data);
         return Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 2),
+          padding: EdgeInsets.only(top: 10, bottom: 0),
           child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+              border: Border.all(color: Colors.black45, width: 0.1),
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).accentColor.withOpacity(0.4),
+                  Theme.of(context).primaryColor.withOpacity(1),
+                  // Colors.grey.withOpacity(0.4),
+                  // Colors.black.withOpacity(0.2),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+            ),
             height: 50,
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -37,14 +51,17 @@ class ActivityTile extends StatelessWidget {
                     backgroundImage: NetworkImage(user.photoUrl),
                   ),
                 ),
-                Text(user.username, style: TextStyle(fontWeight: FontWeight.bold),),
+                Text(
+                  user.username,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           ),
         );
       },
-      );
-}
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +72,15 @@ class ActivityTile extends StatelessWidget {
         buildPostHeader(),
         GestureDetector(
           onTap: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context) => ReadArticle(
-                    desc: desc,
-                    title: title,
-                    sub: sub,
-                  ))),
+            context,
+            CupertinoPageRoute(
+              builder: (context) => ReadArticle(
+                desc: desc,
+                title: title,
+                sub: sub,
+              ),
+            ),
+          ),
           child: Column(
             children: <Widget>[
               Stack(
@@ -69,7 +88,16 @@ class ActivityTile extends StatelessWidget {
                   GestureDetector(
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Color.fromRGBO(43, 51, 108, 0.6)),
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).accentColor.withOpacity(0.4),
+                            Theme.of(context).primaryColor.withOpacity(1),
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        // color: Color.fromRGBO(225, 225, 225, 0.6)
+                      ),
                       padding: EdgeInsets.all(0),
                       width: MediaQuery.of(context).size.width,
                       height: 130,
@@ -84,7 +112,8 @@ class ActivityTile extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: Color.fromRGBO(225, 225, 225, 0.5),
+                          border: Border.all(color: Colors.black45, width: 1),
+                          color: Color.fromRGBO(214, 129, 64, 0.8),
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(title),
                     ),
@@ -97,7 +126,8 @@ class ActivityTile extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: Color.fromRGBO(0, 60, 120, 0.4),
+                          border: Border.all(color: Colors.black45, width: 1),
+                          color: Color.fromRGBO(75, 149, 164, 0.9),
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(sub),
                     ),
@@ -110,6 +140,7 @@ class ActivityTile extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45, width: 1),
                           color: Color.fromRGBO(225, 225, 225, 0.4),
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(desc),
