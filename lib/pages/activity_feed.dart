@@ -28,7 +28,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     QuerySnapshot postcollection = await firestore
         .collection('posts')
         .document(
-        widget.myUserId)
+        '104487127616899191424')
             .collection('userposts').orderBy('timestamp', descending: true)
         .getDocuments();
     print(postcollection.documents.length);

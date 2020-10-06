@@ -55,13 +55,14 @@ class _ProfileState extends State<Profile> {
     QuerySnapshot snapshot = await firestore
         .collection('posts')
         .document(widget.profileId)
-        .collection('userposts').orderBy('timestamp', descending: true)
+        .collection('userposts')
+        .orderBy('timestamp', descending: true)
         .getDocuments();
     snapshot.documents.forEach((element) {
       ideaitems.add(IdeaItem.fromDocument(element.data));
     });
     setState(() {
-      postCount=snapshot.documents.length;
+      postCount = snapshot.documents.length;
     });
     print(ideaitems);
     return ideaitems;
@@ -75,7 +76,9 @@ class _ProfileState extends State<Profile> {
           .get(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return circularProgress();
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
         User user = User.fromDocument(snapshot.data);
         return Padding(
@@ -163,11 +166,16 @@ class _ProfileState extends State<Profile> {
             child: FutureBuilder(
               future: getProfilePosts(),
               builder: (context, snapshot) {
-                if (isLoading) {
-                  return CircularProgressIndicator();
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
                 return ListView.builder(
-                  itemBuilder: (context, index) => buildUserIdea(snapshot.data[index].mainIdea, snapshot.data[index].sub, snapshot.data[index].ans),
+                  itemBuilder: (context, index) => buildUserIdea(
+                      snapshot.data[index].mainIdea,
+                      snapshot.data[index].sub,
+                      snapshot.data[index].ans),
                   itemCount: snapshot.data.length,
                 );
 //                buildUserIdea(snapshot.data['title'], "subidea", "desc");

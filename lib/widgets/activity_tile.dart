@@ -14,7 +14,7 @@ class ActivityTile extends StatelessWidget {
 
   buildPostHeader() {
     return FutureBuilder(
-      future: Firestore.instance.collection('users').document(userId).get(),
+      future: Firestore.instance.collection('users').document('104487127616899191424').get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
