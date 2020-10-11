@@ -29,16 +29,7 @@ class ActivityTile extends StatelessWidget {
                 topRight: Radius.circular(15),
               ),
               border: Border.all(color: Colors.black45, width: 0.1),
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).accentColor.withOpacity(0.4),
-                  Theme.of(context).primaryColor.withOpacity(1),
-                  // Colors.grey.withOpacity(0.4),
-                  // Colors.black.withOpacity(0.2),
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              color: Theme.of(context).primaryColor.withOpacity(0.8),
             ),
             height: 50,
             width: MediaQuery.of(context).size.width,
@@ -88,14 +79,7 @@ class ActivityTile extends StatelessWidget {
                   GestureDetector(
                     child: Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Theme.of(context).accentColor.withOpacity(0.4),
-                            Theme.of(context).primaryColor.withOpacity(1),
-                          ],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
+                       color: Theme.of(context).primaryColor.withOpacity(0.8),
                         // color: Color.fromRGBO(225, 225, 225, 0.6)
                       ),
                       padding: EdgeInsets.all(0),
@@ -115,7 +99,7 @@ class ActivityTile extends StatelessWidget {
                           border: Border.all(color: Colors.black45, width: 1),
                           color: Color.fromRGBO(214, 129, 64, 0.8),
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text(title),
+                      child: Text(title, style: TextStyle(fontWeight: FontWeight.w600),),
                     ),
                   ),
                   Positioned(
@@ -127,9 +111,9 @@ class ActivityTile extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.black45, width: 1),
-                          color: Color.fromRGBO(75, 149, 164, 0.9),
+                          color: Color.fromRGBO(95, 170, 203, 1),
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text(sub),
+                      child: Text(sub, style: TextStyle(fontWeight: FontWeight.w500),),
                     ),
                   ),
                   Positioned(
@@ -143,7 +127,7 @@ class ActivityTile extends StatelessWidget {
                           border: Border.all(color: Colors.black45, width: 1),
                           color: Color.fromRGBO(225, 225, 225, 0.4),
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text(desc),
+                      child: Text(desc,),
                     ),
                   ),
                 ],
